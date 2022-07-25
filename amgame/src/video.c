@@ -1,13 +1,15 @@
 #include <game.h>
+#include <klib.h>
 
 #define SIDE 16
 static int w, h;
 
 static void init() {
-  // AM_GPU_CONFIG_T info = {0};
-  // ioe_read(AM_GPU_CONFIG, &info);
-  // w = info.width;
-  // h = info.height;
+  AM_GPU_CONFIG_T info = {0};
+  ioe_read(AM_GPU_CONFIG, &info);
+  printf("AM_GPU_CONFIG,w=%d,h=%d\n",info.width,info.height);
+  w = info.width;
+  h = info.height;
   w = 300;
   h = 400;
 }
