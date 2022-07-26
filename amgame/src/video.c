@@ -10,8 +10,6 @@ static void init() {
   printf("AM_GPU_CONFIG,w=%d,h=%d\n",info.width,info.height);
   w = info.width;
   h = info.height;
-  w = 300;
-  h = 400;
 }
 
 static void draw_tile(int x, int y, int w, int h, uint32_t color) {
