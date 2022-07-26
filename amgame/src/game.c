@@ -6,8 +6,6 @@
 int main(const char *args) {
   ioe_init();
   
-  snake_length = 1;
-  
 
 
   puts("mainargs = \"");
