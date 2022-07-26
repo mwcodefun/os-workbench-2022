@@ -1,8 +1,14 @@
 #include <game.h>
 
+
+
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
+  
+  snake_length = 1;
+  
+
 
   puts("mainargs = \"");
   puts(args); // make run mainargs=xxx
