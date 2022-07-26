@@ -2,6 +2,7 @@
 #include <klib.h>
 
 #define SIDE 16
+#define SNAKE_SIZE 8
 static int w, h;
 
 uint32_t background_color = 0x000000;
@@ -37,7 +38,7 @@ static void draw_tile(int x, int y, int w, int h, uint32_t color) {
 
 void draw_main(){
   for(int i = 0;i < snake_length; i++){
-    draw_tile(position[i][0],position[i][1],SIDE,SIDE,color);
+    draw_tile(position[i][0],position[i][1],SNAKE_SIZE,SNAKE_SIZE,color);
   }
 }
 
