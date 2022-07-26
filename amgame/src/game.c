@@ -1,7 +1,7 @@
 #include <game.h>
 
 
-
+uint32_t snake_length ;
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
