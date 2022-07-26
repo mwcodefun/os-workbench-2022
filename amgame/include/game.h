@@ -4,7 +4,7 @@
 #include <klib-macros.h>
 
 
-uint32_t snake_length = 1;
+extern uint32_t snake_length;
 
 //记录🐍身体的位置 X，Y坐标
 uint32_t position[63355][2];
