@@ -1,6 +1,7 @@
 #include <am.h>
 #include <SDL2/SDL.h>
 #include <fenv.h>
+#include <klib.h>
 
 //#define MODE_800x600
 #ifdef MODE_800x600
@@ -28,7 +29,12 @@ static Uint32 texture_sync(Uint32 interval, void *param) {
 }
 
 void __am_gpu_init() {
-  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+  int init_status = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+  printf("init status %d\n",init_status);
+  if(init_status < 0){
+    printf("sdl error %s\n",SDL_GetError());
+  }
+  assert(init_status == 0);
   window = SDL_CreateWindow("Native Application",
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 #ifdef MODE_800x600
