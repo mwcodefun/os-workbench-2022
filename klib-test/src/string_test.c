@@ -26,6 +26,12 @@ void testStrcmp() {
     assert(strcmp("\0","\0") == 0);
     assert(strcmp("a","\0") > 0);
     assert(strcmp("\0","a") < 0);
+
+    char *str1 = "hello";
+    char *str2 = "hello";
+    assert(strcmp(str1,str2) == 0);
+    char *str3 = "hello world";
+    assert(strcmp(str1,str3) < 0);
 }
 void testStrLen(){
     int i = rand();
@@ -68,7 +74,14 @@ void testMemSet(){
     }
 }
 void testPrintf(){
-    printf("%s-%d\n","123",10);
+    char teststr[20] = "Out of memory";
+    printf("%s\n",teststr);
+    // printf("%s-%d\n","123",10);
+}
+
+void testMalloc(){
+    void *mem = malloc(4);
+    assert(mem);
 }
 
 
@@ -80,7 +93,8 @@ int main() {
     // testStrncmp();
     // testMemSet();
 
-    test_itostr();
+    // test_itostr();
     // testPrintf();
+    testMalloc();
     return 0;
 }
