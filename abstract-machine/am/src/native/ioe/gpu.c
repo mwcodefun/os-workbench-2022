@@ -1,7 +1,9 @@
 #include <am.h>
 #include <SDL2/SDL.h>
 #include <fenv.h>
+#include <klib.h>
 void print(const char *value);
+
 //#define MODE_800x600
 #ifdef MODE_800x600
 # define W    800
@@ -37,6 +39,8 @@ void __am_gpu_init() {
   if(initstatus == 0){
     printf("SDL init success \n");
   }
+
+  assert(init_status == 0);
   window = SDL_CreateWindow("Native Application",
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 #ifdef MODE_800x600
