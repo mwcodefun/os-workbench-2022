@@ -13,3 +13,7 @@ void co_wait(struct co *co) {
 
 void co_yield() {
 }
+
+int main(){
+  return 0;
+}
