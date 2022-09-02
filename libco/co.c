@@ -143,9 +143,9 @@ void co_wait(struct co *co)
     switch_to(co);
   }else{
     //jmp from set jmp
-    if(co -> status == CO_DEAD){
-      co_free(co);
-    }
+    // if(co -> status == CO_DEAD){
+    //   co_free(co);
+    // }
   }
 }
 
