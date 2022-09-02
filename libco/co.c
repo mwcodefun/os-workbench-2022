@@ -52,7 +52,7 @@ struct co
   int pool_idx;
 };
 
-int insert_pool(struct co *co)
+static int insert_pool(struct co *co)
 {
   if(co_pool_size >= POOL_SIZE){
     return 0;
@@ -70,7 +70,7 @@ int insert_pool(struct co *co)
   return 0;
 }
 
-struct co *pool_next_co()
+static struct co *pool_next_co()
 {
   for (int i = 0; i < co_pool_size; i++)
   {
