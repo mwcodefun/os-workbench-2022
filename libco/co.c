@@ -83,11 +83,11 @@ static struct co *pool_next_co()
   return 0;
 }
 
-static void co_free(struct co *co){
-  co_pool[co -> pool_idx] = NULL;
-  co_pool_size--;
-  free(co);
-}
+// static void co_free(struct co *co){
+//   co_pool[co -> pool_idx] = NULL;
+//   co_pool_size--;
+//   free(co);
+// }
 
 static void co_wrapper(void *arg){
   struct co *co = (struct co*)arg;
