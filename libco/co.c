@@ -79,7 +79,7 @@ static struct co *pool_next_co()
     {
       struct co *co = co_pool[i];
       if(co -> status == CO_DEAD) continue;
-      if(co -> stack == CO_WAITING) continue;
+      if(co -> status == CO_WAITING) continue;
       return co;
     }
   }
@@ -176,7 +176,7 @@ void co_yield ()
       switch_from_dead_co(next);
     }
     if(next -> status == CO_WAITING){
-      Assert(0, "execute a waiting co. "
+      assert(0, "execute a waiting co. "
 			  "maybe a waiting circle has occured\n");
     }
   }else{
