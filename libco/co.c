@@ -110,7 +110,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   co->arg = arg;
   
   co->status = CO_NEW;
-  current = co;
+  co -> waiter = NULL;
   insert_pool(co);
   return co;
 }
