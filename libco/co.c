@@ -127,7 +127,7 @@ void switch_from_dead_co(struct co *co) {
 }
 void switch_to(struct co *co){
   if(co -> status == CO_NEW){
-    stack_switch_call(co -> stack,co -> func,co -> arg);
+    stack_switch_call(co -> stack,co -> func,(uintptr_t)co -> arg);
   }else{
     longjmp(co -> context,1);
   }
