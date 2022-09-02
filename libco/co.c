@@ -105,7 +105,6 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   struct co *co = (struct co *)malloc(sizeof(struct co));
   co->name = (char *)malloc(sizeof(name));
 	strcpy(co->name, name);
-  strcpy(co->name, name);
   co->func = co_wrapper;
   co->arg = co;
   
