@@ -162,7 +162,7 @@ void co_yield ()
 
     if (next->status == CO_NEW)
     {
-      stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next);
+      stack_switch_call(next->stack + STACK_SIZE, co_wrapper, (uintptr_t)next);
     }
     if (next->status == CO_RUNNING)
     {
