@@ -1,9 +1,9 @@
 #include <co.h>
 #include <stdio.h>
 
-void work(char *arg){
+void work(void *arg){
     for(int i =0;i< 10;i++){
-        printf("%s%d \n",arg,i);
+        printf("%s%d \n",(char *)arg,i);
     }
 }
 
