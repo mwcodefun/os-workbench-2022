@@ -175,10 +175,7 @@ void co_yield ()
     {
       switch_from_dead_co(next);
     }
-    if(next -> status == CO_WAITING){
-      assert(0, "execute a waiting co. "
-			  "maybe a waiting circle has occured\n");
-    }
+ 
   }else{
     //jmp from longjmp()
   }
