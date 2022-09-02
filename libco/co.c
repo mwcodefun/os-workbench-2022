@@ -164,7 +164,7 @@ void co_yield ()
 
     if (next->status == CO_NEW)
     {
-      stack_switch_call(next->stack, next->func, next->arg);
+      stack_switch_call(next->stack, next->func, (uintptr_t)next->arg);
     }
     if (next->status == CO_RUNNING)
     {
