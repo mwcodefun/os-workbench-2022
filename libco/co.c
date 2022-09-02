@@ -73,7 +73,9 @@ static int insert_pool(struct co *co)
 
 static struct co *pool_next_co()
 {
-  for (int i = 0; i < co_pool_size; i++)
+  int id = current->pool_idx;
+
+  for (int i = id; i < co_pool_size + id; i++)
   {
     if (co_pool[i] != NULL)
     {
