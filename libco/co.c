@@ -99,11 +99,6 @@ static void co_wrapper(void *arg){
     co_yield();
   }
 }
-static void co_main_init(){
-  struct co *main = co_start("main",NULL,NULL);
-  main -> status = CO_RUNNING;
-  current = main;
-}
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
@@ -178,3 +173,10 @@ void co_yield ()
     //jmp from longjmp()
   }
 }
+
+__attribute__((constructor)) static void co_main_init(){
+  struct co *main = co_start("main",NULL,NULL);
+  main -> status = CO_RUNNING;
+  current = main;
+}
+
