@@ -42,6 +42,7 @@ enum co_status
 };
 struct co
 {
+   int pool_idx;
   char *name;
   void (*func)(void *); // co_start 指定的入口地址和参数
   void *arg;
@@ -50,8 +51,7 @@ struct co
   struct co *waiter;         // 是否有其他协程在等待当前协程
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
-  int pool_idx;
-};
+ };
 
 static int insert_pool(struct co *co)
 {
