@@ -88,16 +88,12 @@ static struct co *pool_next_co()
 //   co_pool_size--;
 //   free(co);
 // }
-
+void switch_from_dead_co(struct co *co);
 static void co_wrapper(void *arg){
   struct co *co = (struct co*)arg;
   co->func(co -> arg);
   co -> status = CO_DEAD;
-  if(co -> waiter != NULL) {
-    longjmp(co -> waiter -> context,1);
-  }else{
-    co_yield();
-  }
+  switch_from_dead_co(co);
 }
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
@@ -119,7 +115,9 @@ void switch_from_dead_co(struct co *co) {
   assert(co -> status == CO_DEAD);
 
   if(co -> waiter != NULL) {
-    longjmp(co -> waiter -> context,1);
+    if(co -> waiter -> context != NULL){
+      longjmp(co -> waiter -> context,1);
+    }
   }else{
     co_yield();
   }
