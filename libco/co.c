@@ -105,8 +105,9 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   struct co *co = (struct co *)malloc(sizeof(struct co));
   co->name = (char *)malloc(sizeof(name));
 	strcpy(co->name, name);
-  co->func = co_wrapper;
-  co->arg = co;
+  
+  co->func = func;
+  co->arg = arg;
   
   co->status = CO_NEW;
   current = co;
@@ -125,7 +126,7 @@ void switch_from_dead_co(struct co *co) {
 }
 void switch_to(struct co *co){
   if(co -> status == CO_NEW){
-    stack_switch_call(co -> stack,co -> func,(uintptr_t)co -> arg);
+    stack_switch_call(co -> stack,co_wrapper,(uintptr_t)co -> arg);
   }else{
     longjmp(co -> context,1);
   }
