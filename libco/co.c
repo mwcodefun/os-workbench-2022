@@ -104,8 +104,8 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
   struct co *co = (struct co *)malloc(sizeof(struct co));
   strcpy(co->name, name);
-  co->func = func;
-  co->arg = arg;
+  co->func = co_wrapper;
+  co->arg = co;
   co->status = CO_NEW;
   current = co;
   insert_pool(co);
