@@ -42,7 +42,7 @@ enum co_status
 };
 struct co
 {
-   int pool_idx;
+  int pool_idx;
   char *name;
   void (*func)(void *); // co_start 指定的入口地址和参数
   void *arg;
@@ -77,7 +77,10 @@ static struct co *pool_next_co()
   {
     if (co_pool[i] != NULL)
     {
-      return co_pool[i];
+      struct co *co = co_pool[i];
+      if(co -> status == CO_DEAD) continue;
+      if(co -> stack == CO_WAITING) continue;
+      return co;
     }
   }
   return 0;
@@ -171,6 +174,10 @@ void co_yield ()
     if (next->status == CO_DEAD)
     {
       switch_from_dead_co(next);
+    }
+    if(next -> status == CO_WAITING){
+      Assert(0, "execute a waiting co. "
+			  "maybe a waiting circle has occured\n");
     }
   }else{
     //jmp from longjmp()
