@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <setjmp.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include <string.h>
 #define STACK_SIZE 1024
