@@ -5,7 +5,7 @@
 #include <assert.h>
 
 #include <string.h>
-#define STACK_SIZE 1024
+#define STACK_SIZE (1 << 16)
 
 // Switch stack and jmp to entry
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
@@ -124,7 +124,9 @@ void switch_from_dead_co(struct co *co) {
 }
 void switch_to(struct co *co){
   if(co -> status == CO_NEW){
-    stack_switch_call(co -> stack,co_wrapper,(uintptr_t)co);
+    current = co;
+    co -> status = CO_RUNNING;
+    stack_switch_call(co -> stack + STACK_SIZE,co_wrapper,(uintptr_t)co);
   }else{
     longjmp(co -> context,1);
   }
@@ -136,7 +138,7 @@ void co_wait(struct co *co)
 {
   int jmp_return = setjmp(current -> context);
   if(jmp_return == 0){
-    current -> status == CO_WAITING;
+    current -> status = CO_WAITING;
     co -> waiter = current;
     switch_to(co);
   }else{
@@ -146,7 +148,7 @@ void co_wait(struct co *co)
     // }
   }
 }
-
+//0x5555555597c0
 void co_yield ()
 {
   // when yield need change to another co
