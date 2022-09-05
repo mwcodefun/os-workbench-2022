@@ -169,25 +169,22 @@ void co_yield ()
   // when yield need change to another co
   // record current context and switch to another
 
-  current->status = CO_RUNNING;
   int jmp_return = setjmp(current->context);
   if (jmp_return == 0)
   {
     struct co *next = pool_next_co();
-
+    assert(next -> status <= CO_RUNNING);
     if (next->status == CO_NEW)
     {
+      current = next;
+      next -> status = CO_RUNNING;
       stack_switch_call(next->stack + STACK_SIZE, co_wrapper, (uintptr_t)next);
     }
     if (next->status == CO_RUNNING)
     {
+      current = next;
       longjmp(next->context, 1);
     }
-    if (next->status == CO_DEAD)
-    {
-      switch_from_dead_co(next);
-    }
- 
   }else{
     //jmp from longjmp()
   }
