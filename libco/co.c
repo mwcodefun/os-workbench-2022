@@ -81,7 +81,6 @@ static struct co *pool_next_co()
     if (co_pool[i] != NULL)
     {
       struct co *co = co_pool[i % co_pool_size];
-      if(co == current) continue;
       if(co -> status == CO_DEAD) continue;
       if(co -> status == CO_WAITING) continue;
       return co;
