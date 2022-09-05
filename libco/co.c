@@ -39,7 +39,7 @@ enum co_status
   CO_DEAD,    // 已经结束，但还未释放资源
 };
 
-
+typedef void (*co_handler_t)(void *arg);
 
 struct co
 {
@@ -53,6 +53,43 @@ struct co
   jmp_buf context;           // 寄存器现场 (setjmp.h)
   uint8_t stack[STACK_SIZE]; // 协程的堆栈
  };
+
+void (*co_handler[CO_DEAD + 1]) (struct co *co);
+void switch_from_dead_co(struct co *co) {
+  assert(co -> status == CO_DEAD);
+
+  if(co -> waiter != NULL) {
+    if(co -> waiter -> context != NULL){
+      longjmp(co -> waiter -> context,1);
+    }
+  }else{
+    co_yield();
+  }
+}
+
+void co_switch_new(struct co *co){
+  current = co;
+  co -> status = CO_RUNNING;
+  stack_switch_call(co -> stack + STACK_SIZE,co_wrapper,(uintptr_t)co);
+}
+
+void co_switch_running(struct co* co){
+  current = co;
+  longjmp(co -> context,1);
+}
+
+void co_switch_waiting(struct co* co){
+   assert(0);
+}
+
+
+static void *co_switch[] = {
+  [CO_NEW] = co_switch_new,
+  [CO_RUNNING] = co_switch_running,
+  [CO_WAITING] = co_switch_waiting,
+  [CO_DEAD] = switch_from_dead_co,
+};
+
 
 static int insert_pool(struct co *co)
 {
@@ -109,7 +146,7 @@ static void co_wrapper(void *arg){
   struct co *co = (struct co*)arg;
   co->func(co -> arg);
   co -> status = CO_DEAD;
-  switch_from_dead_co(co);
+  ((co_handler_t)co_handler[CO_DEAD])(co);
 }
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
@@ -127,30 +164,9 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
   return co;
 }
 
-void switch_from_dead_co(struct co *co) {
-  assert(co -> status == CO_DEAD);
 
-  if(co -> waiter != NULL) {
-    if(co -> waiter -> context != NULL){
-      longjmp(co -> waiter -> context,1);
-    }
-  }else{
-    co_yield();
-  }
-}
 void switch_to(struct co *co){
-  printf("switch to %s\n",co->name);
-  if(co -> status == CO_NEW){
-    current = co;
-    co -> status = CO_RUNNING;
-    stack_switch_call(co -> stack + STACK_SIZE,co_wrapper,(uintptr_t)co);
-  }
-  if(co -> status == CO_DEAD){
-    switch_from_dead_co(co);
-  }
-  else{
-    longjmp(co -> context,1);
-  }
+  ((co_handler_t)co_handler[co -> status])(co);
 }
 
 //wait on main
@@ -162,7 +178,9 @@ void co_wait(struct co *co)
   if(jmp_return == 0){
     current -> status = CO_WAITING;
     co -> waiter = current;
-    switch_to(co);
+    
+    ((co_handler_t)co_handler[CO_DEAD])(co);
+
   }else{
     co_free(co);
 		current->status = CO_RUNNING;
@@ -182,17 +200,7 @@ void co_yield ()
       longjmp(current -> context,1);
     }
     assert(next -> status <= CO_RUNNING);
-    if (next->status == CO_NEW)
-    {
-      current = next;
-      next -> status = CO_RUNNING;
-      stack_switch_call(next->stack + STACK_SIZE, co_wrapper, (uintptr_t)next);
-    }
-    if (next->status == CO_RUNNING)
-    {
-      current = next;
-      longjmp(next->context, 1);
-    }
+    ((co_handler_t)co_handler[next -> status])(next);
   }else{
     //jmp from longjmp()
   }
@@ -204,6 +212,10 @@ __attribute__((destructor)) static void co_pool_free(){
 
 
 __attribute__((constructor)) static void co_main_init(){
+  for(int i = 0;i < co_pool_size;i++){
+    co_pool[i] = NULL;
+  }
+
   struct co *main = co_start("main",NULL,NULL);
   main -> status = CO_RUNNING;
   current = main;
