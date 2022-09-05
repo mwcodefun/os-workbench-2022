@@ -55,6 +55,7 @@ struct co
  };
 
 void (*co_handler[CO_DEAD + 1]) (struct co *co);
+
 void switch_from_dead_co(struct co *co) {
   assert(co -> status == CO_DEAD);
   if(co -> waiter != NULL) {
@@ -147,7 +148,7 @@ static void co_wrapper(void *arg){
   struct co *co = (struct co*)arg;
   co->func(co -> arg);
   co -> status = CO_DEAD;
-  ((co_handler_t)co_handler[CO_DEAD])(co);
+  ((co_handler_t)co_switch[CO_DEAD])(co);
 }
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
@@ -167,7 +168,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
 
 void switch_to(struct co *co){
-  ((co_handler_t)co_handler[co -> status])(co);
+  ((co_handler_t)co_switch[co -> status])(co);
 }
 
 //wait on main
@@ -198,7 +199,7 @@ void co_yield ()
       longjmp(current -> context,1);
     }
     assert(next -> status <= CO_RUNNING);
-    ((co_handler_t)co_handler[next -> status])(next);
+    ((co_handler_t)co_switch[next -> status])(next);
   }else{
     //jmp from longjmp()
   }
