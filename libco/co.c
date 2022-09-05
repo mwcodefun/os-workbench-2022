@@ -88,7 +88,17 @@ static struct co *pool_next_co()
   }
   return 0;
 }
+void co_free(struct co *co) {
+	Assert((co != NULL), "should not free a NULL co pointer");
 
+	co_pool[co->pool_idx] = NULL;
+	co_pool_size -- ;
+
+	if (!co->name) {
+		free(co->name);
+	}
+	free(co);
+}
 // static void co_free(struct co *co){
 //   co_pool[co -> pool_idx] = NULL;
 //   co_pool_size--;
@@ -148,10 +158,8 @@ void co_wait(struct co *co)
     co -> waiter = current;
     switch_to(co);
   }else{
-    //jmp from set jmp
-    // if(co -> status == CO_DEAD){
-    //   co_free(co);
-    // }
+    co_free(co);
+		current->status = CO_RUNNING;
   }
 }
 
