@@ -89,7 +89,7 @@ static struct co *pool_next_co()
   return 0;
 }
 void co_free(struct co *co) {
-	Assert((co != NULL), "should not free a NULL co pointer");
+	assert((co != NULL), "should not free a NULL co pointer");
 
 	co_pool[co->pool_idx] = NULL;
 	co_pool_size -- ;
