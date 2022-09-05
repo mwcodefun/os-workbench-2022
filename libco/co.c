@@ -177,6 +177,7 @@ void co_yield ()
   if (jmp_return == 0)
   {
     struct co *next = pool_next_co();
+    printf("switch to:%s\n",next->name);
     if(next == NULL){
       longjmp(current -> context,1);
     }
