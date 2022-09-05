@@ -57,7 +57,6 @@ struct co
 void (*co_handler[CO_DEAD + 1]) (struct co *co);
 void switch_from_dead_co(struct co *co) {
   assert(co -> status == CO_DEAD);
-
   if(co -> waiter != NULL) {
     if(co -> waiter -> context != NULL){
       current = co -> waiter;
@@ -173,7 +172,6 @@ void switch_to(struct co *co){
 
 //wait on main
 //so current is main
-
 void co_wait(struct co *co)
 {
   int jmp_return = setjmp(current -> context);
