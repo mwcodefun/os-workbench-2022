@@ -78,7 +78,7 @@ static struct co *pool_next_co()
 
   for (int i = id; i < co_pool_size + id; i++)
   {
-    if (co_pool[i] != NULL)
+    if (co_pool[i % co_pool_size] != NULL)
     {
       struct co *co = co_pool[i % co_pool_size];
       if(co == NULL) continue;
