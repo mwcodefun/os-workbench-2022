@@ -66,7 +66,7 @@ void switch_from_dead_co(struct co *co) {
     co_yield();
   }
 }
-
+static void co_wrapper(void *arg);
 void co_switch_new(struct co *co){
   current = co;
   co -> status = CO_RUNNING;
