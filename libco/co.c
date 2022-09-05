@@ -38,6 +38,9 @@ enum co_status
   CO_WAITING, // 在 co_wait 上等待
   CO_DEAD,    // 已经结束，但还未释放资源
 };
+
+
+
 struct co
 {
   int pool_idx;
@@ -72,8 +75,7 @@ static int insert_pool(struct co *co)
 static struct co *pool_next_co()
 {
   int id = rand() % co_pool_size;
-
-  for (int i = id; i < co_pool_size + id; i++)
+  for (int i = id; i <= co_pool_size + id; i++)
   {
     if (co_pool[i % co_pool_size] != NULL)
     {
