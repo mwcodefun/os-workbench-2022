@@ -139,6 +139,7 @@ void switch_from_dead_co(struct co *co) {
   }
 }
 void switch_to(struct co *co){
+  printf("switch to %s\n",co->name);
   if(co -> status == CO_NEW){
     current = co;
     co -> status = CO_RUNNING;
@@ -154,7 +155,6 @@ void switch_to(struct co *co){
 
 //wait on main
 //so current is main
-//当前携程进入等待状态
 
 void co_wait(struct co *co)
 {
