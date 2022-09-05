@@ -198,6 +198,11 @@ void co_yield ()
   }
 }
 
+__attribute__((destructor)) static void co_pool_free(){
+  co_free(co_pool[0]);
+}
+
+
 __attribute__((constructor)) static void co_main_init(){
   struct co *main = co_start("main",NULL,NULL);
   main -> status = CO_RUNNING;
