@@ -32,7 +32,6 @@ static struct co *co_pool[POOL_SIZE];
 static int pool_index;
 
 
-
 enum co_status
 {
   CO_NEW = 1, // 新创建，还未执行过
@@ -74,7 +73,6 @@ static int insert_pool(struct co *co)
 static struct co *pool_next_co()
 {
   int id = rand() % co_pool_size;
-  // int id = current->pool_idx;
 
   for (int i = id; i < co_pool_size + id; i++)
   {
@@ -90,6 +88,8 @@ static struct co *pool_next_co()
   }
   return 0;
 }
+
+
 void co_free(struct co *co) {
 	assert((co != NULL));
 
@@ -101,11 +101,8 @@ void co_free(struct co *co) {
 	}
 	free(co);
 }
-// static void co_free(struct co *co){
-//   co_pool[co -> pool_idx] = NULL;
-//   co_pool_size--;
-//   free(co);
-// }
+
+
 void switch_from_dead_co(struct co *co);
 static void co_wrapper(void *arg){
   struct co *co = (struct co*)arg;
@@ -145,13 +142,19 @@ void switch_to(struct co *co){
     current = co;
     co -> status = CO_RUNNING;
     stack_switch_call(co -> stack + STACK_SIZE,co_wrapper,(uintptr_t)co);
-  }else{
+  }
+  if(co -> status == CO_DEAD){
+    switch_from_dead_co(co);
+  }
+  else{
     longjmp(co -> context,1);
   }
 }
 
 //wait on main
 //so current is main
+//当前携程进入等待状态
+
 void co_wait(struct co *co)
 {
   int jmp_return = setjmp(current -> context);
