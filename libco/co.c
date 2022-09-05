@@ -60,6 +60,7 @@ void switch_from_dead_co(struct co *co) {
 
   if(co -> waiter != NULL) {
     if(co -> waiter -> context != NULL){
+      current = co -> waiter;
       longjmp(co -> waiter -> context,1);
     }
   }else{
@@ -67,6 +68,7 @@ void switch_from_dead_co(struct co *co) {
   }
 }
 static void co_wrapper(void *arg);
+
 void co_switch_new(struct co *co){
   current = co;
   co -> status = CO_RUNNING;
@@ -178,9 +180,7 @@ void co_wait(struct co *co)
   if(jmp_return == 0){
     current -> status = CO_WAITING;
     co -> waiter = current;
-    
-    ((co_handler_t)co_handler[CO_DEAD])(co);
-
+    switch_to(co);
   }else{
     co_free(co);
 		current->status = CO_RUNNING;
