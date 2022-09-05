@@ -29,7 +29,6 @@ static struct co *current;
 static int co_pool_size = 0;
 
 static struct co *co_pool[POOL_SIZE];
-static int pool_index;
 
 
 enum co_status
