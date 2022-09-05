@@ -81,6 +81,7 @@ static struct co *pool_next_co()
     if (co_pool[i] != NULL)
     {
       struct co *co = co_pool[i % co_pool_size];
+      if(co == current) continue;
       if(co -> status == CO_DEAD) continue;
       if(co -> status == CO_WAITING) continue;
       return co;
@@ -167,11 +168,13 @@ void co_yield ()
 {
   // when yield need change to another co
   // record current context and switch to another
-
   int jmp_return = setjmp(current->context);
   if (jmp_return == 0)
   {
     struct co *next = pool_next_co();
+    if(next == NULL){
+      longjmp(current -> context,1);
+    }
     assert(next -> status <= CO_RUNNING);
     if (next->status == CO_NEW)
     {
